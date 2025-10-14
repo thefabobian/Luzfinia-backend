@@ -17,9 +17,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Importar rutas (ejemplo)
+// Importar rutas
 import userRoutes from "./src/routes/userRoutes.js";
+import houseRoutes from "./src/routes/houseRoutes.js";
+import applianceRoutes from "./src/routes/applianceRoutes.js";
 app.use("/api/users", userRoutes);
+app.use("/api/houses", houseRoutes);
+app.use("/api/appliances", applianceRoutes);
 
 // Ruta raíz
 app.get("/", (req, res) => {

@@ -1,15 +1,28 @@
 import express from "express";
-import { createHouse, getAllHouses, getHousesByUser } from "../controllers/houseController.js";
+import {
+  createHouse,
+  getAvailableHouses,
+  purchaseHouse,
+  getUserHouses,
+  getAllHouses,
+} from "../controllers/houseController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Crear casa
-router.post("/", createHouse);
+// ADMIN crea casa
+router.post("/", protect, adminOnly, createHouse);
 
-// Obtener todas las casas
-router.get("/", getAllHouses);
+// Público: ver casas disponibles
+router.get("/available", getAvailableHouses);
 
-// Obtener casas por usuario
-router.get("/user/:userId", getHousesByUser);
+// CLIENT compra casa
+router.post("/purchase", protect, purchaseHouse);
+
+// CLIENT ve sus casas
+router.get("/user", protect, getUserHouses);
+
+// ADMIN ve todas las casas
+router.get("/all", protect, adminOnly, getAllHouses);
 
 export default router;

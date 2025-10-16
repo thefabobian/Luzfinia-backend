@@ -1,22 +1,27 @@
 import mongoose from "mongoose";
 
-const applianceSchema = new mongoose.Schema({
+const houseSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true,
+      type: String,
+      required: [true, "El nombre de la casa es obligatorio"],
+      trim: true,
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+      required: false,
     },
-    appliences: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Appliance",
-        }
+    appliances: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "HouseAppliance", // referencia al electrodoméstico en esa casa
+      },
     ],
-});
+  },
+  { timestamps: true }
+);
 
-const House = mongoose.model("House", applianceSchema);
+const House = mongoose.model("House", houseSchema);
 export default House;

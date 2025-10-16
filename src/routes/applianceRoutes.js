@@ -1,19 +1,24 @@
 import express from "express";
 import {
-  addAppliance,
-  getAppliancesByHouse,
+  createApplianceModel,
+  getApplianceModels,
+  assignApplianceToHouse,
   toggleAppliance,
 } from "../controllers/applianceController.js";
+import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Crear electrodoméstico
-router.post("/", addAppliance);
+// ADMIN crea modelos globales
+router.post("/models", protect, adminOnly, createApplianceModel);
 
-// Obtener electrodomésticos por casa
-router.get("/:houseId", getAppliancesByHouse);
+// Ver catálogo global
+router.get("/models", getApplianceModels);
 
-// Encender/apagar electrodoméstico
-router.put("/toggle/:id", toggleAppliance);
+// CLIENT agrega electrodoméstico a su casa
+router.post("/assign", protect, assignApplianceToHouse);
+
+// CLIENT enciende/apaga electrodoméstico
+router.put("/toggle/:id", protect, toggleAppliance);
 
 export default router;

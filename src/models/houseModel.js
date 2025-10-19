@@ -19,6 +19,10 @@ const houseSchema = new mongoose.Schema(
         ref: "HouseAppliance", // referencia al electrodoméstico en esa casa
       },
     ],
+    totalConsumption: {
+      type: Number,
+      default: 0, // Consumo total en kWh
+    },
   },
   { timestamps: true }
 );

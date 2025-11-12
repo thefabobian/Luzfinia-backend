@@ -26,5 +26,7 @@ const readingSchema = new mongoose.Schema({
     ],
 });
 
+readingSchema.index({ house: 1, ts: -1 });
+
 const Reading = mongoose.model("Reading", readingSchema);
 export default Reading;

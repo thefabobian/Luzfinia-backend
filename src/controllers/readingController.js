@@ -53,10 +53,78 @@ export const getHouseProfile = async (req, res) => {
     let profile = "equilibrado";
     if (max === sums.morning) profile = "matutino";
     else if (max === sums.night) profile = "nocturno";
-    else profile = "equilibrado";
 
     res.json({ profile, sums });
   } catch (error) {
     res.status(500).json({ message: "Error al calcular perfil", error: error.message });
+  }
+};
+
+// Obtener consumo total por perdiodo (days, weeks, months and years)
+export const getConsuptionStats = async (req, res) => {
+  try {
+    const { houseId } = req.params;
+    const { period } = req.query;
+    const user = req.user;
+
+    if (!houseId || !period) {
+      return res.status(400).json({ message: "Faltan parámetros obligatorios: houseId y period" });
+    }
+
+    const house = await House.findById(houseId);
+    if (!house) return res.status(404).json({ message: "Casa no encontrada" });
+
+    if (user.role !== "admin" && house.owner.toString() !== user._id.toString()) {
+      return res.status(403).json({ message: "No autorizado para ver las estadísticas de esta casa" });
+    }
+
+    const now = new Date();
+    let startDate;
+
+    switch (period) {
+      case "day":
+        startDate = new Date(now.setDate(now.getDate() - 1));
+        break;
+      case "week":
+        startDate = new Date(now.setDate(now.getDate() - 7));
+        break;
+      case "month":
+        startDate = new Date(now.setMonth(now.getMonth() - 1));
+        break;
+      case "year":
+        startDate = new Date(now.setFullYear(now.getFullYear() - 1));
+        break;
+      default:
+        return res.status(400).json({ message: "Período inválido. Use day, week, month o year." });
+    }
+
+    const readings = await Reading.aggregate([
+      { 
+        $match: 
+        { house: house._id, 
+          ts: { $gte: startDate }, 
+        }, 
+      },
+      { $group: { 
+        _id: null, 
+        totalKwh: { $sum: "$kwh" }, 
+        count: { $sum: 1}, 
+      },
+    },
+    ]);
+
+    const total = readings.length ? readings[0].totalKwh : 0;
+    const costoPorKwh = 600;
+    const costo = total * costoPorKwh;
+
+    res.json({ 
+      houseId, 
+      period, 
+      totalKwh: total.toFixed(2), 
+      costoAproximado: `$${costo.toFixed(0)} COP`,
+      lecturas: readings.length ? readings[0].count : 0,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener estadísticas de consumo", error: error.message });
   }
 };

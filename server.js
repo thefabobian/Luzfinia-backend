@@ -22,6 +22,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import houseRoutes from "./src/routes/houseRoutes.js";
 import applianceRoutes from "./src/routes/applianceRoutes.js";
 import readingRoutes from "./src/routes/readingRoutes.js";
+import { corsOptions } from "./src/config/corsConfig.js";
 
 // Rutas del backend
 app.use("/api/users", userRoutes);
@@ -36,8 +37,10 @@ app.get("/", (req, res) => {
 
 // Crear servidor HTTP y configurar Socket.io
 const server = http.createServer(app);
+
+// Configurar Socket.io con CORS
 const io = new Server(server, {
-  cors: { origin: "*" }, // permite conexión desde cualquier frontend
+  cors: corsOptions,
 });
 
 // Socket.io - conexiones en tiempo real

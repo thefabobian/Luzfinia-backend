@@ -71,3 +71,28 @@ export const toggleAppliance = async (req, res) => {
     res.status(500).json({ message: "Error al cambiar estado", error: error.message });
   }
 };
+
+// 🛠️ ADMIN actualiza un modelo global
+export const updateApplianceModel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, powerConsumption, description } = req.body;
+
+    const updatedModel = await Appliance.findByIdAndUpdate(
+      id,
+      { name, powerConsumption, description },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedModel) {
+      return res.status(404).json({ message: "Modelo no encontrado" });
+    }
+
+    res.json({
+      message: "Modelo actualizado correctamente",
+      appliance: updatedModel,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error al actualizar modelo", error: error.message });
+  }
+};

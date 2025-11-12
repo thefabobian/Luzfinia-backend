@@ -4,6 +4,7 @@ import {
   getApplianceModels,
   assignApplianceToHouse,
   toggleAppliance,
+  updateApplianceModel
 } from "../controllers/applianceController.js";
 import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
@@ -20,5 +21,9 @@ router.post("/assign", protect, assignApplianceToHouse);
 
 // CLIENT enciende/apaga electrodoméstico
 router.put("/toggle/:id", protect, toggleAppliance);
+
+// ADMIN actualiza modelo global
+router.put("/models/:id", protect, adminOnly, updateApplianceModel);
+
 
 export default router;

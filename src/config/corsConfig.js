@@ -13,6 +13,6 @@ export const corsOptions = {
       callback(new Error("Origen no permitido por CORS"));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };

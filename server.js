@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import { startSimulation } from "./src/services/simulator.js";
+import { startAllCronJobs } from "./src/services/cronJobs.js";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -58,3 +59,6 @@ server.listen(PORT, () => console.log(`🚀 Servidor corriendo en puerto ${PORT}
 
 // Iniciar simulación de lecturas
 const stopSimulation = startSimulation(io, { intervalMs: 5000, peakFactor: 1.6 });
+
+// Iniciar Cron Jobs
+startAllCronJobs();

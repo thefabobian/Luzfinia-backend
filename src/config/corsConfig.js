@@ -1,7 +1,8 @@
 import cors from "cors";
 
 const allowedOrigins = [
-  "http://localhost:5173", // React local
+  "http://localhost:5173", // React local (desarrollo)
+  "https://luzfinia.onrender.com", // Frontend en producción
 ];
 
 export const corsOptions = {
